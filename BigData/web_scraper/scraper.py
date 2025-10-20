@@ -19,7 +19,7 @@ with open("computere.html", "r") as f:
 
             # Extract product price
             price_span = li.find("span", class_="font-headline text-[2.875rem] leading-[2.875rem] inc-vat")
-            price = price_span.get_text(strip=True) if price_span else "N/A"
+            price = f"{price_span.get_text(strip=True).strip(".-")} DKK" if price_span else "N/A"
 
             writer.writerow([price, title])
 
