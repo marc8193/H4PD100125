@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+while true; do
+    echo -n "Please choose an option [1-5]: "
+    read choice
+
+    case $choice in
+        1)
+			echo "$(ps aux)"
+            ;;
+        2)
+            echo "Which process should be killed?"
+			read pid
+			echo "Do you really want to kill?"
+			read choice
+			if [ $choice == "yes" ]; then
+				kill -9 $pid
+			fi
+            ;;
+        3)
+			# Get CPU usage (average over 1 minute)
+			cpu_load=$(uptime | awk -F'load average:' '{ print $2 }' | cut -d',' -f1 | xargs)
+
+			# Get memory usage
+			read mem_total mem_used mem_free <<< $(free -m | awk '/^Mem:/ { print $2, $3, $4 }')
+
+			# Get disk usage (for root partition)
+			disk_usage=$(df -h / | awk 'NR==2 {print $5}')
+
+			# Print formatted output
+			echo "========================================"
+			echo "         System Resource Summary         "
+			echo "========================================"
+			printf "CPU Load (1 min avg):    %s%%\n" "$cpu_load"
+			printf "RAM Used:                %sMB / %sMB\n" "$mem_used" "$mem_total"
+			printf "Disk Usage (/):          %s\n" "$disk_usage"
+			echo "========================================"
+			;;
+		4)
+			echo "$(rc-status)"
+			;;
+        5)
+            echo "Exiting... Goodbye!"
+            break
+            ;;
+        *)
+            echo "Invalid option. Please try again."
+            ;;
+    esac
+    echo ""
+done
+
