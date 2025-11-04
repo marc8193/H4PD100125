@@ -1,0 +1,145 @@
+[
+    {
+        "id": "261ba8a85bd71fc4",
+        "type": "tab",
+        "label": "Opgave 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b8efb8c2b452b68c",
+        "type": "inject",
+        "z": "261ba8a85bd71fc4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 180,
+        "wires": [
+            [
+                "49689610d2560dc9"
+            ]
+        ]
+    },
+    {
+        "id": "70a460430736f58d",
+        "type": "debug",
+        "z": "261ba8a85bd71fc4",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 280,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "49689610d2560dc9",
+        "type": "random",
+        "z": "261ba8a85bd71fc4",
+        "name": "Temperature",
+        "low": "-273.15",
+        "high": "273.15",
+        "inte": "false",
+        "property": "payload",
+        "x": 290,
+        "y": 220,
+        "wires": [
+            [
+                "e1ca593a01290de5"
+            ]
+        ]
+    },
+    {
+        "id": "e1ca593a01290de5",
+        "type": "switch",
+        "z": "261ba8a85bd71fc4",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "lte",
+                "v": "30",
+                "vt": "num"
+            },
+            {
+                "t": "gt",
+                "v": "30",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 270,
+        "y": 280,
+        "wires": [
+            [
+                "7f1813451b1214d5"
+            ],
+            [
+                "cc63776d54cef97d"
+            ]
+        ]
+    },
+    {
+        "id": "7f1813451b1214d5",
+        "type": "function",
+        "z": "261ba8a85bd71fc4",
+        "name": "function 1",
+        "func": "msg.payload = `Temperaturen er under 30 (${msg.payload})`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 280,
+        "wires": [
+            [
+                "70a460430736f58d"
+            ]
+        ]
+    },
+    {
+        "id": "cc63776d54cef97d",
+        "type": "function",
+        "z": "261ba8a85bd71fc4",
+        "name": "function 2",
+        "func": "msg.payload = `Temperaturen er over 30 (${msg.payload})`;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 320,
+        "wires": [
+            [
+                "70a460430736f58d"
+            ]
+        ]
+    }
+]

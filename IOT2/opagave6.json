@@ -1,0 +1,244 @@
+[
+    {
+        "id": "261ba8a85bd71fc4",
+        "type": "tab",
+        "label": "Opgave 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b8efb8c2b452b68c",
+        "type": "inject",
+        "z": "261ba8a85bd71fc4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 290,
+        "y": 180,
+        "wires": [
+            [
+                "49689610d2560dc9"
+            ]
+        ]
+    },
+    {
+        "id": "49689610d2560dc9",
+        "type": "random",
+        "z": "261ba8a85bd71fc4",
+        "name": "Temperature",
+        "low": "0",
+        "high": "50",
+        "inte": "true",
+        "property": "temperature",
+        "x": 290,
+        "y": 240,
+        "wires": [
+            [
+                "cc63776d54cef97d"
+            ]
+        ]
+    },
+    {
+        "id": "cc63776d54cef97d",
+        "type": "function",
+        "z": "261ba8a85bd71fc4",
+        "name": "function 2",
+        "func": "msg.payload = {\n    \"status\": msg.temperature > 30 ? \"ALARM\" : \"OK\",\n    \"value\": msg.temperature,\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 320,
+        "wires": [
+            [
+                "8a496783b65ce09d",
+                "fb605a589a658b3b"
+            ]
+        ]
+    },
+    {
+        "id": "8a496783b65ce09d",
+        "type": "ui-gauge",
+        "z": "261ba8a85bd71fc4",
+        "name": "Temperature (°C)",
+        "group": "9a3c352ce2519791",
+        "order": 1,
+        "value": "payload.value",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "gauge",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "°C",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "20",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "30",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": 0,
+        "max": "50",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 290,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fb605a589a658b3b",
+        "type": "ui-text",
+        "z": "261ba8a85bd71fc4",
+        "group": "9a3c352ce2519791",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Status",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#717171",
+        "wrapText": false,
+        "className": "",
+        "value": "payload.status",
+        "valueType": "msg",
+        "x": 290,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "9a3c352ce2519791",
+        "type": "ui-group",
+        "name": "temp",
+        "page": "fb4cb50a190870a4",
+        "width": 6,
+        "height": 1,
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "fb4cb50a190870a4",
+        "type": "ui-page",
+        "name": "Page 1",
+        "ui": "e9a64915cbb5739a",
+        "path": "/temp",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "872dd1d3bda76017",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "e9a64915cbb5739a",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "872dd1d3bda76017",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094CE",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    }
+]

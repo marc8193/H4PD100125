@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+board=("-" "-" "-" "-" "-" "-" "-" "-" "-")
+
+# Winning patterns (arrays)
+win1=("*" "*" "*" "-" "-" "-" "-" "-" "-")
+win2=("-" "-" "-" "*" "*" "*" "-" "-" "-")
+win3=("-" "-" "-" "-" "-" "-" "*" "*" "*")
+win4=("*" "-" "-" "*" "-" "-" "*" "-" "-")
+win5=("-" "*" "-" "-" "*" "-" "-" "*" "-")
+win6=("-" "-" "*" "-" "-" "*" "-" "-" "*")
+win7=("*" "-" "-" "-" "*" "-" "-" "-" "*")
+win8=("-" "-" "*" "-" "*" "-" "*" "-" "-")
+
+wins=(win1 win2 win3 win4 win5 win6 win7 win8)
+
+draw_board() {
+	for y in {0..2}
+	do
+		for x in {0..2}
+		do
+			index=$(( y * 3 + x ))
+			echo -n "${board[$index]} "
+		done
+
+		echo
+	done
+
+	echo
+}
+
+check_win() {
+    local symbol=$1
+
+    for win in "${wins[@]}"; do
+        local w_array=("${!win}")  # Get actual array
+
+        local match=true
+        for i in {0..8}; do
+            if [[ "${w_array[$i]}" == "*" && "${board[$i]}" != "$symbol" ]]; then
+                match=false
+                break
+            fi
+        done
+
+        $match && return 0  # Return 0 if this win pattern is matched
+    done
+
+    return 1  # No win pattern matched
+}
+
+
+while [[ " ${board[@]} " == *"-"* ]]; do
+	draw_board
+
+	echo -n "Player (X): Enter coordinates (x y): "
+	read x y
+
+	index=$((y*3 + x))
+	board[$index]="X"
+
+	check_win "X"
+	pattern_match=$?
+
+	echo "Pattern match $pattern_match"
+
+	draw_board
+
+	echo -n "Player (O): Enter coordinates (x y): "
+	read x y
+
+	index=$((y*3 + x))
+	board[$index]="O"
+
+done
+
+draw_board

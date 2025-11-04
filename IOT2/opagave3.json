@@ -1,0 +1,75 @@
+[
+    {
+        "id": "261ba8a85bd71fc4",
+        "type": "tab",
+        "label": "Opgave 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b8efb8c2b452b68c",
+        "type": "inject",
+        "z": "261ba8a85bd71fc4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 180,
+        "wires": [
+            [
+                "b49279dbd1ee3467"
+            ]
+        ]
+    },
+    {
+        "id": "b49279dbd1ee3467",
+        "type": "function",
+        "z": "261ba8a85bd71fc4",
+        "name": "function 1",
+        "func": "var date = new Date(msg.payload);\nvar timeString = date.toTimeString().split(\" \")[0];\nmsg.payload = `Data send klokken ${timeString}`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 260,
+        "wires": [
+            [
+                "70a460430736f58d"
+            ]
+        ]
+    },
+    {
+        "id": "70a460430736f58d",
+        "type": "debug",
+        "z": "261ba8a85bd71fc4",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 280,
+        "y": 360,
+        "wires": []
+    }
+]
