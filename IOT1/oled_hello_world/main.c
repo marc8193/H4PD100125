@@ -23,8 +23,19 @@ int main(void) {
 
 	stdout = &uart_output;
 
+	uint8_t display_status = SSD1306_Init(SSD1306_ADDR);
+	if (SSD1306_SUCCESS != display_status) {
+		printf("Display NOT properly initialized!\r\n");
+	} else {
+		printf("Display has been initialized.\r\n");
+	}
+
     while (1) {
-		printf("Hello, world\r\n");
+		display_status = SSD1306_DrawString("h4pd011125 styrer", NORMAL);
+		if (SSD1306_SUCCESS != display_status) {
+			printf("Error while trying to draw string to screen - %d\r\n", 
+					display_status);
+		}
 	}
 
     return 0;

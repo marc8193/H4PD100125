@@ -10,7 +10,7 @@ PORT = usb
 BUILD_DIR = build
 TARGET_ELF = $(BUILD_DIR)/main.elf
 TARGET_HEX = $(BUILD_DIR)/main.hex
-OBJ = $(BUILD_DIR)/main.o
+OBJ = $(BUILD_DIR)/main.o $(BUILD_DIR)/ssd1306.o $(BUILD_DIR)/twi.o
 
 all: $(BUILD_DIR) $(TARGET_HEX)
 
@@ -20,6 +20,9 @@ $(BUILD_DIR):
 # Compile ELF
 $(TARGET_ELF): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
+
+$(BUILD_DIR)/%.o: lib/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Compile object files into build folder
 $(BUILD_DIR)/%.o: %.c
@@ -31,7 +34,7 @@ $(TARGET_HEX): $(TARGET_ELF)
 
 # Flash to board
 flash: $(TARGET_HEX)
-	$(AVRDUDE) -v -p $(MCU) -c $(PROGRAMMER) -P $(PORT) -U flash:w:$(TARGET_HEX) -F
+	$(AVRDUDE) -F -v -p $(MCU) -c $(PROGRAMMER) -P $(PORT) -U flash:w:$(TARGET_HEX)
 
 clean:
 	rm -rf $(BUILD_DIR)
