@@ -198,7 +198,7 @@ int main() {
         exit(1);
     }
 
-    printf("Server running on http://localhost:%i\n", port);
+    printf("Server running on http://0.0.0.0:%i\n", port);
 
 	Todo todos[MAX_TODOS] = {0};
     while (1) {
@@ -228,6 +228,8 @@ int main() {
 
 			case ENDPOINT_POST:
 			case ENDPOINT_PUT:
+				if (request.body_length < 1) break;
+
 				assert(id_cursor < MAX_TODOS);
 
 				Todo todo = {0};
