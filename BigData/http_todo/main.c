@@ -86,33 +86,37 @@ int is_number_path(const char *path, int* id) {
 }
 
 Endpoint get_endpoint(const Request* request, int* id) {
-    // POST /
+    // POST /post
     if (strcmp(request->method, "POST") == 0 &&
-        strcmp(request->path, "/") == 0)
+        strcmp(request->path, "/post") == 0)
         return ENDPOINT_POST;
 
-    // GET /{id}
+    // GET /get/{id}
     if (strcmp(request->method, "GET") == 0 &&
-        is_number_path(request->path, id) == 0)
+        strncmp(request->path, "/get/", 5) == 0 &&
+        is_number_path(request->path + 4, id) == 0)
         return ENDPOINT_GET;
 
-    // DELETE /{id}
+    // DELETE /remove/{id}
     if (strcmp(request->method, "DELETE") == 0 &&
-        is_number_path(request->path, id) == 0)
+        strncmp(request->path, "/remove/", 8) == 0 &&
+        is_number_path(request->path + 7, id) == 0)
         return ENDPOINT_DELETE;
 
-    // GET /
+    // GET /getall
     if (strcmp(request->method, "GET") == 0 &&
-        strcmp(request->path, "/") == 0)
+        strcmp(request->path, "/getall") == 0)
         return ENDPOINT_GETALL;
 
-    // PUT /{id}
+    // PUT /update/{id}
     if (strcmp(request->method, "PUT") == 0 &&
-        is_number_path(request->path, id) == 0)
+        strncmp(request->path, "/update/", 8) == 0 &&
+        is_number_path(request->path + 7, id) == 0)
         return ENDPOINT_PUT;
 
     return ENDPOINT_UNKNOWN;
 }
+
 
 typedef struct {
 	int id;
@@ -234,6 +238,8 @@ int main() {
 
 				assert(todo.id < MAX_TODOS);
 				todos[todo.id] = todo;
+
+				cJSON_AddNumberToObject(json, "id", todo.id);
 
 				break;
 
