@@ -1,0 +1,21 @@
+meta {
+  name: POST
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:31337
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": 3,
+    "name": "foo",
+    "isDone": false,
+    "priority": 5,
+    "description": "This i a description"
+  }
+}

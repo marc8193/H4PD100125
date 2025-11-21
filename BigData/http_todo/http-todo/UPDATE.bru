@@ -1,0 +1,21 @@
+meta {
+  name: UPDATE
+  type: http
+  seq: 5
+}
+
+put {
+  url: http://localhost:31337/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": 3,
+    "name": "foo",
+    "isDone": false,
+    "priority": 5,
+    "description": "This i a updated description"
+  }
+}
