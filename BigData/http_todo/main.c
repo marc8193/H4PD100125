@@ -9,12 +9,14 @@
 
 #include "lib/cJSON/cJSON.h"
 
-#define MAX_TODOS 10
+#define MAX_TODOS 4096
 #define MAX_NAME_LEN 256
 #define MAX_DESC_LEN 1024
 
+int id_cursor = 0;
+
 typedef struct {
-    char method[8]; 
+    char method[8];
     char path[256];
     char version[16];
     char* headers;
@@ -132,7 +134,7 @@ int json_to_todo(const char* json_str, Todo* todo) {
     cJSON* root = cJSON_Parse(json_str);
     if (!root) return 1;
 
-    cJSON* id = cJSON_GetObjectItem(root, "id");
+	cJSON* id = cJSON_AddNumberToObject(root, "id", id_cursor++);
     cJSON* name = cJSON_GetObjectItem(root, "name");
     cJSON* is_done = cJSON_GetObjectItem(root, "isDone");
     cJSON* priority = cJSON_GetObjectItem(root, "priority");
@@ -180,7 +182,7 @@ int main() {
 	int port = 31337;
     server_addr.sin_port = htons(port);
 
-    // Bind to port 31337 
+    // Bind to port 31337
     if (bind(server_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
         perror("bind");
         exit(1);
@@ -212,40 +214,42 @@ int main() {
 
 			parse_http_request(buffer, &request);
         }
-		
+
 		int id = 0;
 		Endpoint endpoint = get_endpoint(&request, &id);
 		cJSON* json = cJSON_CreateObject();
 		switch (endpoint) {
 			case ENDPOINT_UNKNOWN:
 				break;
-			
+
 			case ENDPOINT_POST:
 			case ENDPOINT_PUT:
+				assert(id_cursor < MAX_TODOS);
+
 				Todo todo = {0};
 				if (json_to_todo(request.body, &todo) != 0) {
 					printf("Failed to handle POST request!\n");
 					exit(1);
 				}
-				
+
 				assert(todo.id < MAX_TODOS);
 				todos[todo.id] = todo;
-				
+
 				break;
-			
+
 			case ENDPOINT_GET:
 				assert(id < MAX_TODOS);
 
 				todo_to_json(&todos[id], json);
 
 				break;
-			
+
 			case ENDPOINT_DELETE:
 				assert(id < MAX_TODOS);
 				memset(&todos[id], 0, sizeof(Todo));
 
 				break;
-			
+
 			case ENDPOINT_GETALL:
 				assert(id < MAX_TODOS);
 
@@ -260,9 +264,9 @@ int main() {
 						cJSON_Delete(json);
 						return -1;
 					}
-					
+
 					todo_to_json(&todos[i], json_object);
-					
+
 					cJSON_AddItemToArray(json, json_object);
 				}
 
@@ -277,7 +281,7 @@ int main() {
 		size_t body_len = strlen(json_str);
 
 		// Build HTTP response
-		char response[1024];
+		char response[1024*MAX_TODOS];
 		snprintf(response, sizeof(response),
 			"HTTP/1.1 200 OK\r\n"
 			"Content-Type: application/json\r\n"
