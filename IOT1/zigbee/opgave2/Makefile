@@ -1,7 +1,7 @@
 MCU = atmega328pb
 F_CPU = 16000000UL
 CC = avr-gcc
-CFLAGS = -std=c89 -Wall -Werror -pedantic -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -I lib
+CFLAGS = -std=c89 -Wall -Werror -pedantic -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os
 OBJCOPY = avr-objcopy
 AVRDUDE = avrdude
 PROGRAMMER = xplainedmini
