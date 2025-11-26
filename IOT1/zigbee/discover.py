@@ -5,7 +5,7 @@ import time
 from digi.xbee.models.status import NetworkDiscoveryStatus
 from digi.xbee.devices import XBeeDevice
 
-device = XBeeDevice("/dev/serial/by-id/usb-FTDI_FT231X_USB_UART_D30DRDST-if00-port0", 9600)
+device = XBeeDevice("/dev/serial/by-id/usb-FTDI_FT231X_USB_UART_D30DRDRO-if00-port0", 9600)
 
 try:
     device.open()

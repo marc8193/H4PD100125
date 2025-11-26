@@ -16,18 +16,18 @@ try:
     time.sleep(1)  # Guard time before sending AT commands
     ser.flushInput()  # Clear any response
 
-    # Set API mode
-    ser.write(b"ATAP1\r")
+    # Get high id
+    ser.write(b"ATSH\r")
     time.sleep(0.5)
     response = ser.read_all()
-    print("Set API mode response:", response.decode(errors='ignore'))
+    print("Get high id response:", response.decode(errors='ignore'))
 
-    # Write settings to non-volatile memory
-    ser.write(b"ATWR\r")
+    # Get low id
+    ser.write(b"ATSL\r")
     time.sleep(0.5)
     response = ser.read_all()
-    print("Write settings response:", response.decode(errors='ignore'))
-
+    print("Get low id response:", response.decode(errors='ignore'))
+    
     # Exit command mode
     ser.write(b"ATCN\r")
     time.sleep(0.5)

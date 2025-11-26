@@ -16,11 +16,11 @@ try:
     time.sleep(1)  # Guard time before sending AT commands
     ser.flushInput()  # Clear any response
 
-    # Set API mode
-    ser.write(b"ATAP1\r")
+    # Set transparent mode
+    ser.write(b"ATAP0\r")
     time.sleep(0.5)
     response = ser.read_all()
-    print("Set API mode response:", response.decode(errors='ignore'))
+    print("Set transparent mode response:", response.decode(errors='ignore'))
 
     # Write settings to non-volatile memory
     ser.write(b"ATWR\r")
@@ -34,7 +34,7 @@ try:
     response = ser.read_all()
     print("Exit command mode response:", response.decode(errors='ignore'))
 
-    print("API mode set. Please power cycle the XBee for changes to take effect.")
+    print("Transparent mode set. Please power cycle the XBee for changes to take effect.")
 
 finally:
     ser.close()

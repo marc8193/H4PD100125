@@ -5,7 +5,7 @@ from digi.xbee.devices import XBeeDevice
 DATA_TO_SEND = "Hello XBee!"
 
 try:
-    device = XBeeDevice("/dev/serial/by-id/usb-FTDI_FT231X_USB_UART_D30DRDRO-if00-port0", 9600)
+    device = XBeeDevice("/dev/serial/by-id/usb-FTDI_FT231X_USB_UART_D30DRDST-if00-port0", 9600)
     device.open()
 
     print("Sending broadcast data: %s..." % DATA_TO_SEND)

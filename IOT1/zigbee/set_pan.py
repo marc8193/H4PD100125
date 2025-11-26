@@ -3,7 +3,7 @@
 import serial
 import time
 
-SERIAL_PORT = "/dev/serial/by-id/usb-FTDI_FT231X_USB_UART_D30DRDST-if00-port0"
+SERIAL_PORT = "/dev/serial/by-id/usb-FTDI_FT231X_USB_UART_D30DRDRO-if00-port0"
 BAUD_RATE = 9600
 PAN_ID = "4444"
 
