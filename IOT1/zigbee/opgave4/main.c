@@ -4,6 +4,12 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "lib/ssd1306.h"
+
+char ring_buffer[256] = {0};
+volatile uint8_t head = 0;
+volatile uint8_t tail = 0;
+
 int uart_transmit(char ch, FILE* stream) {
   while (!(UCSR0A & (1 << UDRE0)));
   UDR0 = ch;
@@ -11,9 +17,9 @@ int uart_transmit(char ch, FILE* stream) {
   return 0;
 }
 
-ISR(USART0_RX_vect) {
+ISR(USART_RX_vect) {
   char data = UDR0;
-  printf("%c", data);
+  ring_buffer[head++] = data;
 }
 
 static FILE uart_output = FDEV_SETUP_STREAM(uart_transmit, NULL, _FDEV_SETUP_WRITE);
@@ -30,11 +36,23 @@ int main(void) {
 
   stdout = &uart_output;
   
+  uint8_t display_status = SSD1306_Init(SSD1306_ADDR);
+  if (display_status != SSD1306_SUCCESS) {
+    return 0;
+  }
+
+  SSD1306_ClearScreen();
+
   /* Enable global interrupts */
   sei();
-  
-  while (true) {}
-  
+
+  while (true) {
+    if (head != tail) {
+        char ch = ring_buffer[tail++];
+        cli();
+        SSD1306_DrawChar(ch, NORMAL);
+        sei();
+    }
+  }  
   return 0;
 }
-

@@ -1,7 +1,7 @@
-MCU = atmega328pb
+MCU = atmega328p
 F_CPU = 16000000UL
 CC = avr-gcc
-CFLAGS =  -Wall -Werror -pedantic -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os
+CFLAGS =  -Wall -Werror -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -I lib
 OBJCOPY = avr-objcopy
 AVRDUDE = avrdude
 PROGRAMMER = xplainedmini
@@ -10,7 +10,7 @@ PORT = usb
 BUILD_DIR = build
 TARGET_ELF = $(BUILD_DIR)/main.elf
 TARGET_HEX = $(BUILD_DIR)/main.hex
-OBJ = $(BUILD_DIR)/main.o
+OBJ = $(BUILD_DIR)/main.o $(BUILD_DIR)/ssd1306.o $(BUILD_DIR)/twi.o
 
 all: $(BUILD_DIR) $(TARGET_HEX)
 
@@ -20,6 +20,9 @@ $(BUILD_DIR):
 # Compile ELF
 $(TARGET_ELF): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^
+
+$(BUILD_DIR)/%.o: lib/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Compile object files into build folder
 $(BUILD_DIR)/%.o: %.c
