@@ -1,8 +1,8 @@
 # Schema Registry
-1.1. Hvordan virker Schema registriet? Det beskriver strukturen på det data, som producers sender til Kafka.
+1. Hvordan virker Schema registriet? Det beskriver strukturen på det data, som producers sender til Kafka.
    		   		  		 			 Når en producer sender en besked, gemmer den ikke selve schemaet i beskeden – kun et lille schema-ID.
 
-1.2. Hvorfor er det smart? Fordi det sikrer, at producer og consumer altid tolker data på samme måde, da begge bruger den samme versionsstyrede datastruktur.
+   1.1. Hvorfor er det smart? Fordi det sikrer, at producer og consumer altid tolker data på samme måde, da begge bruger den samme versionsstyrede datastruktur.
 
 2. Hvordan benytter mit producer/consumer software Schemas?
    - Produceren validerer sine data mod schemaet i Schema Registry. Når den sender en besked, tilføjer den kun schema-ID’et til payloaden.
