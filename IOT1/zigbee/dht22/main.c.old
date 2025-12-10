@@ -1,0 +1,109 @@
+#include <avr/interrupt.h>
+#include <avr/io.h>
+#include <util/delay.h>
+#include <stdbool.h>
+#include <stdio.h>
+
+struct Packet {
+  uint8_t rh_integral;
+  uint8_t rh_decimal;
+  uint8_t t_integral;
+  uint8_t t_decimal;
+  uint8_t checksum;
+};
+
+int uart_transmit(char ch, FILE* stream) {
+  while (!(UCSR0A & (1 << UDRE0)));
+  UDR0 = ch;
+  
+  return 0;
+}
+
+static FILE uart_output = FDEV_SETUP_STREAM(uart_transmit, NULL, _FDEV_SETUP_WRITE);
+
+int main(void) {
+  uint16_t i, j = 0;
+  uint8_t data[5] = {0};
+  
+  /* Set baud rate */
+  const uint8_t ubrr = ((F_CPU/16/9600)-1);
+  UBRR0H = (unsigned char)(ubrr>>8);
+  UBRR0L = (unsigned char)ubrr;
+  /* Enable receiver and transmitter */
+  UCSR0B = (1<<RXEN0)|(1<<TXEN0);
+  /* Set frame format: 8 data, 2 stop bit */
+  UCSR0C = (1<<USBS0)|(3<<UCSZ00);
+  
+  sei();
+
+  stdout = &uart_output;
+
+  DDRD |= (1 << PD2);
+  PORTD &= ~(1 << PD2);
+  _delay_ms(18); 
+
+  PORTD |= (1 << PD2);
+  DDRD &= ~(1 << PD2);
+  _delay_us(40);
+
+  if (PIND & (1 << PD2)) {
+	printf("Error: DHT22 sensor is not responding\r\n");
+	return 2;
+  }
+  _delay_us(80);
+  if (!(PIND & (1 << PD2))) {
+	printf("Error: DHT22 sensor is not responding\r\n");
+	return 2;
+  } 
+  _delay_us(80);
+
+  for (i = 0; i < 5; i++) {
+	for (j = 0; j < 8; j++) {
+	  uint8_t bit = 0;
+	  uint16_t timeout = 0;
+   
+	  /* 1. Wait for data line to go HIGH (Start of the measurement pulse, 28us or 70us long) */
+	  while (!(PIND & (1 << PD2))) {
+        timeout++;
+        if (timeout > 200) {
+		  printf("ERROR: failed to get start pulse!\r\n");
+		  return 2;
+		}
+	  }
+
+	  /* 2. Wait for 40us. This is the discrimination point:
+		 - If the pulse was a 0 (approx 28us), the line will be LOW after this delay.
+		 - If the pulse was a 1 (approx 70us), the line will still be HIGH.
+	  */
+	  _delay_us(40); /* CRITICAL CHANGE: Set to 40us for pulse width discrimination. */
+
+	  bit = 0;
+	  if (PIND & (1 << PD2)) {
+        bit = 1;
+	  }
+
+	  printf("bit = %d\r\n", bit);
+
+	  /* 3. Wait for the end of the pulse (to prepare for the next bit reading) */
+	  timeout = 0;
+	  while (PIND & (1 << PD2)) {
+        timeout++;
+        if (timeout > 200) {
+		  printf("ERROR: failed to get end pulse!\r\n");
+		  return 2;
+		}
+	  }	
+	}
+  }
+	
+  if (data[4] == (data[0] + data[1] + data[2] + data[3])) {
+	struct Packet* packet = (struct Packet*) data;	
+	printf("RHintegral = %d, RHdecimal = %d, Tintegral = %d, Tdecimal = %d, checksum = %d.\r\n",
+		   packet->rh_integral, packet->rh_decimal, packet->t_integral,
+		   packet->t_decimal, packet->checksum);
+  }
+  
+  while (true) {}
+	  
+  return 0;
+}
