@@ -11,9 +11,9 @@
 
 3. Hvad betyder det for performance/throughput? Da der kun sendes et schema-ID i hver besked, og ikke hele schemaet bliver beskederne mindre i størrelse, hvilket giver mindre netværkstrafik, hurtigere overførsel og dermed bedre throughput.
 
-4. Hvad kan jeg gøre, hvis jeg får brug for at fjerne/tilføje/ændre en del af en compleks datatype, som allerede findes i store mængder i et topic, og som jeg har consumere der bruger flittigt af? Fordi der benyttes en binær protokol, er det nemt at tilføje nye felter uden at ødelægge eksisterende implementeringer.
+4. Hvad kan jeg gøre, hvis jeg får brug for at fjerne/tilføje/ændre en del af en compleks datatype, som allerede findes i store mængder i et topic, og som jeg har consumere der bruger flittigt af? Da der er revision på skemaerne, er det muligt at have flere versioner på samme tid.
 
-| Før       | Efter     | Type   |
+| Version 1 | Version 2 | Type   |
 |-----------|-----------|--------|
 | id        | id        | int    |
 | navn      | navn      | string |
